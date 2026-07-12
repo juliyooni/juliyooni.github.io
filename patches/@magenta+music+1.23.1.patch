@@ -1,0 +1,15 @@
+diff --git a/node_modules/@magenta/music/esm/core/audio_utils.js b/node_modules/@magenta/music/esm/core/audio_utils.js
+index 9633fd9..b0d540f 100644
+--- a/node_modules/@magenta/music/esm/core/audio_utils.js
++++ b/node_modules/@magenta/music/esm/core/audio_utils.js
+@@ -1,7 +1,7 @@
+ import * as tf from '@tensorflow/tfjs';
+-import * as FFT from 'fft.js';
+-import * as ndarray from 'ndarray';
+-import * as resample from 'ndarray-resample';
++import FFT from 'fft.js';
++import ndarray from 'ndarray';
++import resample from 'ndarray-resample';
+ import { fetch, getOfflineAudioContext, isSafari } from '../core/compat/global';
+ import * as logging from './logging';
+ const SAMPLE_RATE = 16000;

@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHero from './SectionHero.astro';
+import PostRow from './PostRow.astro';
+import { t, type Locale } from '../i18n/ui';
+import { getPosts } from '../lib/posts';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const posts = await getPosts('mir');
+
+const fmp = posts
+  .filter((p) => p.data.series === 'fmp')
+  .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+const standalone = posts.filter((p) => p.data.series !== 'fmp');
+---
+
+<Base locale={locale} title={t(locale, 'nav.mir')} description={t(locale, 'mir.desc')}>
+  <SectionHero title={t(locale, 'nav.mir')} ornament={t(locale, 'mir.subtitle')} description={t(locale, 'mir.desc')} />
+
+  {fmp.length > 0 && (
+    <section>
+      <div class="section-head">
+        <span class="label">{t(locale, 'mir.series.fmp')}</span>
+      </div>
+      <p class="series-desc">{t(locale, 'mir.series.fmp.desc')}</p>
+      <ul class="posts">
+        {fmp.map((post) => (
+          <PostRow
+            locale={locale}
+            section="mir"
+            post={post}
+            prefix={`${post.data.seriesOrder ?? 0}.`}
+          />
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {standalone.length > 0 && (
+    <section>
+      <div class="section-head">
+        <span class="label">{t(locale, 'mir.standalone')}</span>
+      </div>
+      <ul class="posts">
+        {standalone.map((post) => <PostRow locale={locale} section="mir" post={post} />)}
+      </ul>
+    </section>
+  )}
+</Base>
+
+<style>
+  .posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .series-desc {
+    font-size: 0.87rem;
+    color: var(--muted);
+    margin: 0;
+    word-break: keep-all;
+  }
+</style>

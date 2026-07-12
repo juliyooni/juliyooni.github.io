@@ -1,0 +1,240 @@
+---
+import Base from '../layouts/Base.astro';
+import StaffRule from './StaffRule.astro';
+import { t, localePath, formatDate, type Locale } from '../i18n/ui';
+import { profile } from '../data/profile';
+import { getRecentPosts, postPath } from '../lib/posts';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const recent = await getRecentPosts(5);
+
+const cards = [
+  { href: '/mir', title: t(locale, 'nav.mir'), sub: 'Études', desc: t(locale, 'card.mir.desc') },
+  { href: '/essays', title: t(locale, 'nav.essays'), sub: 'Feuilleton', desc: t(locale, 'card.essays.desc') },
+  { href: '/playground', title: t(locale, 'nav.playground'), sub: 'Spielplatz', desc: t(locale, 'card.playground.desc') },
+  { href: '/research', title: t(locale, 'nav.research'), sub: null, desc: t(locale, 'card.research.desc') },
+];
+
+const links = [
+  { label: 'GitHub', href: profile.links.github },
+  { label: 'Scholar', href: profile.links.scholar },
+  { label: 'Email', href: profile.links.email },
+  { label: 'CV', href: profile.links.cv },
+].filter((l) => l.href);
+---
+
+<Base locale={locale}>
+  <section class="hero">
+    <p class="label">{profile.tagline[locale]}</p>
+    <h1>{profile.name.en}</h1>
+    <StaffRule />
+  </section>
+
+  <section class="intro">
+    <div class="portrait-col">
+      <img src={profile.portrait} alt={profile.name[locale]} width="140" height="170" />
+      <p class="links">
+        {links.map((l, i) => (
+          <>
+            {i > 0 && <span class="sep">·</span>}
+            <a href={l.href}>{l.label}</a>
+          </>
+        ))}
+      </p>
+    </div>
+    <div class="intro-body">
+      <p class="ornament affiliation">{profile.affiliation[locale]}</p>
+      <p class="bio" lang={locale}>{profile.bio[locale]}</p>
+      <p class="row">
+        <span class="label">{t(locale, 'home.interests')}</span>
+        <span class="row-body">{profile.interests[locale].join(' · ')}</span>
+      </p>
+      {profile.news.length > 0 && (
+        <p class="row">
+          <span class="label">{t(locale, 'home.news')}</span>
+          <span class="row-body">
+            {profile.news[0].date} <a href={localePath(locale, profile.news[0].href)}>{profile.news[0][locale]}</a>
+          </span>
+        </p>
+      )}
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="label">{t(locale, 'home.recent')}</span>
+    </div>
+    {recent.length === 0 && <p class="ornament">— tacet —</p>}
+    <ul class="recent">
+      {recent.map(({ section, post }) => (
+        <li>
+          <a href={postPath(section, post)} lang={post.data.lang}>{post.data.title}</a>
+          <span class="ornament meta">
+            {t(locale, section === 'mir' ? 'nav.mir' : 'nav.essays')} · {formatDate(locale, post.data.date)}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="cards">
+    {cards.map((card) => (
+      <a class="plate" href={localePath(locale, card.href)}>
+        <p class="card-title">
+          {card.title}
+          {card.sub && <span class="ornament card-sub"> — {card.sub}</span>}
+        </p>
+        <p class="card-desc">{card.desc}</p>
+      </a>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .hero {
+    text-align: center;
+    padding-top: 2.5rem;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    margin: 0.6rem 0 0;
+  }
+
+  .intro {
+    display: flex;
+    gap: 1.6rem;
+    margin-top: 1.8rem;
+  }
+
+  .portrait-col {
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .portrait-col img {
+    width: 140px;
+    height: 170px;
+    object-fit: cover;
+    border: 1px solid var(--line-strong);
+    background: var(--paper-dim);
+    display: block;
+  }
+
+  .portrait-col .links {
+    font-size: 0.78rem;
+    margin: 0.5rem 0 0;
+    line-height: 1.6;
+  }
+
+  .portrait-col .sep {
+    color: var(--faded);
+    margin: 0 0.25rem;
+  }
+
+  .intro-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .affiliation {
+    font-size: 0.95rem;
+    margin: 0 0 0.7rem;
+  }
+
+  .bio {
+    font-size: 0.94rem;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .bio:lang(ko) {
+    word-break: keep-all;
+  }
+
+  .row {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+  .row .label {
+    font-size: 0.68rem;
+    margin-right: 0.6rem;
+  }
+
+  .recent {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .recent li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.3rem 0;
+  }
+
+  .recent a {
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .recent a:hover {
+    color: var(--henle);
+  }
+
+  .recent .meta {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-top: 2.5rem;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--henle);
+    margin: 0;
+  }
+
+  .card-sub {
+    font-size: 0.82rem;
+    font-weight: 400;
+  }
+
+  .card-desc {
+    font-size: 0.83rem;
+    color: var(--muted);
+    margin: 0.25rem 0 0;
+  }
+
+  @media (max-width: 560px) {
+    .intro {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .cards {
+      grid-template-columns: 1fr;
+    }
+
+    .recent li {
+      flex-direction: column;
+      gap: 0;
+      padding: 0.45rem 0;
+    }
+  }
+</style>

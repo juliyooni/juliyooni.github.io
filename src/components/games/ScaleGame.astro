@@ -1,0 +1,78 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const desc =
+  locale === 'ko'
+    ? '화면의 목표 음을 부르면 음정이 얼마나 정확한지 실시간으로 보여줍니다. 게임 안내는 한국어입니다.'
+    : 'Sing the target note and watch your intonation in real time. In-game text is in Korean.';
+---
+
+<GameLayout locale={locale} title="Scale Practice" ornament="Solfège" description={desc}>
+  <section class="panel setup" id="setupPanel">
+    <h2 class="section-h">스케일 고르기</h2>
+    <p class="setup__hint">
+      기준 음을 한 번 들려준 뒤 시작합니다. 화면의 목표 음을 부르세요 — 정확하면
+      <span class="dot perfect"></span>금색, 살짝 낮으면 <span class="dot lo-mild"></span>세이지,
+      살짝 높으면 <span class="dot hi-mild"></span>보라, 많이 낮으면
+      <span class="dot lo"></span>파랑, 많이 높으면 <span class="dot hi"></span>빨강으로 표시돼요.
+    </p>
+    <div class="scale-list" id="scaleList"></div>
+    <p class="status" id="loadStatus"></p>
+  </section>
+
+  <section class="game hidden" id="gamePanel">
+    <div class="hud">
+      <div class="hud__item">
+        <span class="hud__label">스케일</span>
+        <span class="hud__value" id="hudScale">—</span>
+      </div>
+      <div class="hud__item">
+        <span class="hud__label">진행</span>
+        <span class="hud__value" id="hudProgress">0 / 8</span>
+      </div>
+      <div class="hud__item">
+        <span class="hud__label">오차</span>
+        <span class="hud__value" id="hudCents">— ¢</span>
+      </div>
+    </div>
+
+    <div class="orb" id="orb">
+      <div class="orb__solfege" id="orbSolfege">—</div>
+      <div class="orb__note" id="orbNote">—</div>
+    </div>
+
+    <div class="ladder" id="ladder"></div>
+
+    <div class="controls">
+      <button class="btn btn--green" id="startBtn">▶ 시작</button>
+      <button class="btn" id="refBtn" disabled>♪ 기준음 다시</button>
+      <button class="btn btn--pink" id="stopBtn" disabled>■ 정지</button>
+    </div>
+  </section>
+
+  <section class="panel results hidden" id="resultsPanel">
+    <h2 class="section-h">결과</h2>
+    <div class="results__grid" id="resultsGrid"></div>
+    <button class="btn btn--yellow" id="againBtn">다시 하기</button>
+    <button class="btn" id="pickBtn">다른 스케일</button>
+  </section>
+
+  <details class="note panel">
+    <summary>조작과 팁</summary>
+    <p>
+      마이크 권한이 필요해요. 시작을 누르면 피아노로 기준음(스케일의 첫 음)을 들려줍니다. 그 음정
+      감각을 잡고 화면의 목표 음을 부르세요. 금색을 약 1초 유지하면 다음 음으로 넘어갑니다.
+      휘파람·허밍 어느 쪽이든 동작해요. 오차는 cent 단위(100 cent = 반음)입니다.
+    </p>
+  </details>
+</GameLayout>
+
+<script>
+  import '../../games/scale-practice/main';
+</script>

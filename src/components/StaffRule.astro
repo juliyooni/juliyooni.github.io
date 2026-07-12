@@ -1,0 +1,12 @@
+---
+interface Props {
+  clef?: boolean;
+}
+
+const { clef = true } = Astro.props;
+---
+
+<div class="staff-rule" aria-hidden="true">
+  <i></i><i></i><i></i><i></i><i></i>
+  {clef && <i class="clef">𝄞</i>}
+</div>

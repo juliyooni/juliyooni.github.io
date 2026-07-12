@@ -1,0 +1,56 @@
+---
+import Base from './Base.astro';
+import '../styles/spielplatz.css';
+import { t, localePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  ornament?: string;
+  description?: string;
+}
+
+const { locale, title, ornament, description } = Astro.props;
+---
+
+<Base locale={locale} title={title} description={description}>
+  <header class="game-head">
+    <p class="crumb">
+      <a href={localePath(locale, '/playground')}>{t(locale, 'nav.playground')}</a>
+      <span class="ornament"> — {t(locale, 'playground.subtitle')}</span>
+    </p>
+    <h1>
+      {title}
+      {ornament && <span class="ornament head-ornament"> — {ornament}</span>}
+    </h1>
+    {description && <p class="desc">{description}</p>}
+  </header>
+  <slot />
+</Base>
+
+<style>
+  .game-head {
+    padding-top: 2.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .crumb {
+    font-size: 0.85rem;
+    margin: 0 0 0.8rem;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  .head-ornament {
+    font-size: 0.6em;
+  }
+
+  .desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+    word-break: keep-all;
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import { t, localePath, switchLocalePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const path = Astro.url.pathname;
+const other = switchLocalePath(path);
+
+const items = [
+  { href: '/research', label: t(locale, 'nav.research') },
+  { href: '/mir', label: t(locale, 'nav.mir') },
+  { href: '/essays', label: t(locale, 'nav.essays') },
+  { href: '/playground', label: t(locale, 'nav.playground') },
+  { href: '/about', label: t(locale, 'nav.about') },
+];
+
+function isActive(href: string): boolean {
+  const p = path.replace(/^\/ko(?=\/|$)/, '');
+  return p === href || p.startsWith(`${href}/`);
+}
+---
+
+<header>
+  <a class="wordmark" href={localePath(locale, '/')}>JIYUN KIM</a>
+  <nav>
+    {items.map((item) => (
+      <a href={localePath(locale, item.href)} class:list={[{ active: isActive(item.href) }]}>
+        {item.label}
+      </a>
+    ))}
+    <a class="lang-toggle" href={other.path} aria-label={other.locale === 'ko' ? '한국어로 보기' : 'View in English'}>
+      <span class:list={[{ on: locale === 'en' }]}>EN</span>
+      <span class="dot">·</span>
+      <span class:list={[{ on: locale === 'ko' }]}>한</span>
+    </a>
+  </nav>
+</header>
+
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    max-width: var(--max-width-wide);
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.4rem 1.25rem 0.9rem;
+    border-bottom: 1.5px solid var(--henle);
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--henle);
+  }
+
+  .wordmark:hover {
+    text-decoration: none;
+    color: var(--henle-soft);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  nav > a {
+    font-size: 0.88rem;
+    color: var(--henle);
+  }
+
+  nav > a.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+
+  .lang-toggle {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: 1px solid var(--henle);
+    border-radius: 2px;
+    padding: 0.15rem 0.65rem;
+    color: var(--henle);
+    letter-spacing: 0.05em;
+  }
+
+  .lang-toggle:hover {
+    text-decoration: none;
+    background: var(--henle);
+    color: var(--paper);
+  }
+
+  .lang-toggle span {
+    opacity: 0.45;
+  }
+
+  .lang-toggle .dot {
+    opacity: 0.45;
+    margin: 0 0.1rem;
+  }
+
+  .lang-toggle span.on {
+    opacity: 1;
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    header {
+      justify-content: center;
+    }
+  }
+</style>

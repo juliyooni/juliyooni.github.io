@@ -1,0 +1,83 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const desc =
+  locale === 'ko'
+    ? '오케스트라 반주는 자동으로 흐르고, 팀파니 파트만 키보드로 직접 연주합니다. 게임 안내는 한국어입니다.'
+    : 'The orchestra plays on its own — you play the timpani part on your keyboard. In-game text is in Korean.';
+---
+
+<GameLayout locale={locale} title="Timpani" ornament="Pauken" description={desc}>
+  <section class="panel setup" id="setupPanel">
+    <h2 class="section-h">곡 고르기</h2>
+    <p class="setup__hint">
+      곡을 고르면 팀파니 파트만 채보됩니다. 다른 악기 반주는 자동 재생되고, 팀파니만 당신이
+      <strong>a·s·d·f</strong> 키로 연주해요.
+    </p>
+    <div class="song-list" id="songList"></div>
+    <p class="status" id="loadStatus"></p>
+  </section>
+
+  <section class="game hidden" id="gamePanel">
+    <div class="hud">
+      <div class="hud__item">
+        <span class="hud__label">점수</span>
+        <span class="hud__value" id="points">0</span>
+      </div>
+      <div class="hud__item">
+        <span class="hud__label">콤보</span>
+        <span class="hud__value" id="combo">0</span>
+      </div>
+      <div class="hud__item">
+        <span class="hud__label">정확도</span>
+        <span class="hud__value" id="accuracy">—</span>
+      </div>
+    </div>
+
+    <div class="highway" id="highway">
+      <div class="hit-line"></div>
+      <div class="lanes" id="lanes"></div>
+    </div>
+
+    <div class="judge-flash" id="judgeFlash"></div>
+
+    <div class="controls">
+      <button class="btn btn--green" id="startBtn">▶ 시작</button>
+      <button class="btn btn--pink" id="stopBtn" disabled>■ 정지</button>
+    </div>
+
+    <div class="sync-row">
+      <label class="sync-row__label" for="syncSlider">싱크 보정</label>
+      <button class="sync-nudge" id="syncEarlier" title="노트 늦추기">◀ 늦게</button>
+      <input type="range" id="syncSlider" min="-150" max="150" step="5" value="0" />
+      <button class="sync-nudge" id="syncLater" title="노트 빠르게">빠르게 ▶</button>
+      <span class="sync-row__value" id="syncValue">0 ms</span>
+    </div>
+    <p class="sync-hint">노트가 음악보다 빠르면 ◀, 늦으면 ▶. 게임 중에도 바로 적용돼요.</p>
+  </section>
+
+  <section class="panel results hidden" id="resultsPanel">
+    <h2 class="section-h">결과</h2>
+    <div class="results__grid" id="resultsGrid"></div>
+    <button class="btn btn--yellow" id="againBtn">다시 하기</button>
+  </section>
+
+  <details class="note panel">
+    <summary>조작법</summary>
+    <p>
+      팀파니는 보통 3~4짝을 씁니다. 음 높이가 낮은 드럼부터 <strong>A · S · D · F</strong> 키에
+      차례로 배정돼요. 노트가 판정선에 닿는 순간 해당 키를 누르세요. 다른 악기 반주는 자동
+      재생되고, 팀파니 소리만 당신의 입력에 맞춰 납니다.
+    </p>
+  </details>
+</GameLayout>
+
+<script>
+  import '../../games/timpani/main';
+</script>

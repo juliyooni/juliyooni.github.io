@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHero from './SectionHero.astro';
+import { t, localePath, type Locale } from '../i18n/ui';
+import { publications, projects } from '../data/publications';
+import { profile } from '../data/profile';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+function renderAuthors(authors: string): string {
+  return authors.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+---
+
+<Base locale={locale} title={t(locale, 'nav.research')} description={t(locale, 'research.desc')}>
+  <SectionHero title={t(locale, 'nav.research')} description={t(locale, 'research.desc')} />
+
+  <section>
+    <div class="section-head">
+      <span class="label">Publications</span>
+      {profile.links.cv && <a class="cv" href={profile.links.cv}>CV ↓</a>}
+    </div>
+    <ul class="pubs">
+      {publications.map((pub) => (
+        <li>
+          <p class="pub-title">{pub.title}</p>
+          <p class="pub-authors" set:html={renderAuthors(pub.authors)} />
+          <p class="pub-meta">
+            <span class="venue-badge">{pub.venue.short} {pub.year}</span>
+            <span class="ornament">{pub.venue.full}</span>
+          </p>
+          <p class="pub-links">
+            {pub.links.map((link) => (
+              <a href={link.href}>[{link.label}]</a>
+            ))}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="label">Projects</span>
+    </div>
+    <div class="projects">
+      {projects.map((proj) => {
+        const href = proj.href?.startsWith('/') ? localePath(locale, proj.href) : proj.href;
+        const Tag = href ? 'a' : 'div';
+        return (
+          <Tag class="plate" href={href}>
+            <p class="proj-title">{proj.title[locale]}</p>
+            <p class="proj-desc">{proj.description[locale]}</p>
+          </Tag>
+        );
+      })}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cv {
+    font-size: 0.85rem;
+  }
+
+  .pubs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .pubs li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pub-title {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .pub-authors {
+    font-size: 0.87rem;
+    color: var(--muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .pub-meta {
+    font-size: 0.82rem;
+    margin: 0.35rem 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+
+  .venue-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--henle);
+    border: 1px solid var(--henle);
+    border-radius: 2px;
+    padding: 0.05rem 0.45rem;
+    white-space: nowrap;
+  }
+
+  .pub-links {
+    font-size: 0.83rem;
+    margin: 0.4rem 0 0;
+    display: flex;
+    gap: 0.7rem;
+  }
+
+  .projects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .proj-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--henle);
+    margin: 0;
+  }
+
+  .proj-desc {
+    font-size: 0.83rem;
+    color: var(--muted);
+    margin: 0.25rem 0 0;
+    word-break: keep-all;
+  }
+
+  @media (max-width: 560px) {
+    .projects {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

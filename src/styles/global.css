@@ -1,0 +1,303 @@
+/* ---------------------------------------------------------------
+   Urtext Edition design system
+   Henle/Bärenreiter score-book mood: cream paper, engraved serif,
+   Henle blue accents, staff-line rules.
+   --------------------------------------------------------------- */
+
+:root {
+  --paper: #f7f2e5;
+  --paper-raised: #fbf8ef;
+  --paper-dim: #efe8d5;
+  --ink: #2c2416;
+  --ink-soft: #3d3226;
+  --muted: #5c5340;
+  --faded: #8a7b5c;
+  --line: #d8cdb4;
+  --line-strong: #b8a888;
+  --henle: #1f3a5f;
+  --henle-soft: #2b4c7e;
+  --burgundy: #6e1423; /* B안의 흔적 — 강조가 필요한 아주 드문 순간에만 */
+
+  --font-display: 'Cormorant Garamond', 'Noto Serif KR', 'Apple SD Gothic Neo', serif;
+  --font-body: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+  --font-serif-body: 'Noto Serif KR', 'Cormorant Garamond', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+
+  --max-width: 44rem;
+  --max-width-wide: 56rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+main.wide {
+  max-width: var(--max-width-wide);
+}
+
+/* ---- typography ---- */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.25;
+  margin: 2.5rem 0 1rem;
+}
+
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.25rem; }
+
+:lang(ko) h1, :lang(ko) h2, :lang(ko) h3 {
+  word-break: keep-all;
+}
+
+p {
+  margin: 0 0 1.1rem;
+}
+
+a {
+  color: var(--henle);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--henle-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+strong { font-weight: 600; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 2.5rem 0;
+}
+
+blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  border-left: 2px solid var(--line-strong);
+  font-family: var(--font-serif-body);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---- score-book details ---- */
+
+/* small caps letter-spaced label, e.g. RECENT / INTERESSEN / NEWS */
+.label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--faded);
+  font-weight: 500;
+}
+
+/* ornamental italic subtitle, e.g. — Études */
+.ornament {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--faded);
+}
+
+/* horizontal rule made of five staff lines */
+.staff-rule {
+  width: 15rem;
+  max-width: 60%;
+  margin: 1.25rem auto;
+  position: relative;
+}
+
+.staff-rule > i {
+  display: block;
+  height: 1px;
+  background: var(--line-strong);
+  margin: 4px 0;
+}
+
+.staff-rule > .clef {
+  position: absolute;
+  left: 0.5rem;
+  top: -0.7rem;
+  font-size: 1.7rem;
+  font-style: normal;
+  color: var(--ink);
+  background: none;
+  height: auto;
+  line-height: 1.4;
+}
+
+/* bordered card, like a plate number box on a score cover */
+.plate {
+  border: 1px solid var(--line-strong);
+  padding: 1rem 1.15rem;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+a.plate { display: block; color: inherit; }
+
+a.plate:hover {
+  background: var(--paper-raised);
+  text-decoration: none;
+}
+
+/* section heading with rule, used on list pages */
+.section-head {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.4rem;
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* ---- article/prose ---- */
+
+.prose {
+  font-size: 1.02rem;
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--paper-dim);
+  padding: 0.12em 0.35em;
+  border-radius: 3px;
+}
+
+.prose pre {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  line-height: 1.6;
+  font-size: 0.88rem;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92rem;
+  margin: 1.5rem 0;
+}
+
+.prose th, .prose td {
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.7rem;
+  text-align: left;
+}
+
+.prose th {
+  font-family: var(--font-display);
+  font-weight: 600;
+  background: var(--paper-dim);
+}
+
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+/* ---- lang badge for untranslated posts ---- */
+
+.lang-badge {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: 0.05rem 0.4rem;
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+
+/* ---- forms/buttons (playground 등에서 사용) ---- */
+
+button, .button {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--henle);
+  background: transparent;
+  border: 1px solid var(--henle);
+  border-radius: 2px;
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+button:hover, .button:hover {
+  background: var(--henle);
+  color: var(--paper);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+button:disabled:hover {
+  background: transparent;
+  color: var(--henle);
+}
+
+select, input[type='text'] {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: 0.4rem 0.6rem;
+}
+
+::selection {
+  background: var(--henle);
+  color: var(--paper);
+}

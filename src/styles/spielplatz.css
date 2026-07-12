@@ -1,0 +1,677 @@
+/* ---------------------------------------------------------------
+   Spielplatz — game pages, urtext edition restyle.
+   Music Playground의 arcade.css + 게임별 CSS와 같은 클래스 계약을
+   유지하면서(메인 로직 무수정) 룩만 악보집 무드로 바꾼다.
+   --------------------------------------------------------------- */
+
+/* functional feedback palette, classical edition */
+:root {
+  --p-perfect: #c9a227; /* on pitch — gold leaf */
+  --p-lo-mild: #6f8f4f; /* slightly flat — sage */
+  --p-hi-mild: #7c6aa6; /* slightly sharp — violet */
+  --p-lo: #4a6fa5; /* clearly flat — slate blue */
+  --p-hi: #a34141; /* clearly sharp — madder red */
+  --p-neutral: var(--paper-dim);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---- shared chrome ---- */
+
+.panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-h {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--faded);
+  margin: 0 0 0.9rem;
+}
+
+.setup__hint,
+.sync-hint,
+.note {
+  font-size: 0.87rem;
+  color: var(--muted);
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.setup__hint {
+  margin: 0 0 1rem;
+}
+
+.note summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--henle);
+}
+
+.note p {
+  margin-top: 0.6rem;
+}
+
+.status {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.status.is-error { color: var(--p-hi); }
+.status.is-ok { color: var(--p-lo-mild); }
+.status.is-busy { color: var(--p-perfect); }
+
+/* ---- buttons ---- */
+
+.btn {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--henle);
+  background: transparent;
+  border: 1px solid var(--henle);
+  border-radius: 2px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--henle);
+  color: var(--paper);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.btn--green {
+  background: var(--henle);
+  color: var(--paper);
+}
+
+.btn--green:hover:not(:disabled) {
+  background: var(--henle-soft);
+}
+
+.btn--pink {
+  color: var(--burgundy);
+  border-color: var(--burgundy);
+}
+
+.btn--pink:hover:not(:disabled) {
+  background: var(--burgundy);
+  color: var(--paper);
+}
+
+.btn--yellow {
+  color: var(--ink-soft);
+  border-color: var(--line-strong);
+}
+
+.btn--yellow:hover:not(:disabled) {
+  background: var(--paper-dim);
+  color: var(--ink);
+}
+
+.btn--pink.is-recording {
+  animation: rec-pulse 1s infinite steps(1);
+}
+
+@keyframes rec-pulse {
+  50% {
+    background: var(--burgundy);
+    color: var(--paper);
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin: 1rem 0 1.25rem;
+}
+
+/* ---- voice transformer ---- */
+
+.bar-display {
+  text-align: center;
+}
+
+.bar-display__label {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 1rem;
+  min-height: 1.6rem;
+}
+
+.bar-display__label.is-countin {
+  color: var(--burgundy);
+  font-style: italic;
+}
+
+.beat-lamps {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.lamp {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  border-radius: 50%;
+  transition: transform 0.08s ease, background 0.08s ease;
+}
+
+.lamp.is-on {
+  background: var(--henle);
+  border-color: var(--henle);
+}
+
+.lamp.is-downbeat.is-on {
+  background: var(--burgundy);
+  border-color: var(--burgundy);
+  transform: scale(1.35);
+}
+
+.instrument-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.7rem;
+}
+
+.instrument-btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.9rem 0.5rem;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  text-align: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.instrument-btn:hover {
+  border-color: var(--henle);
+}
+
+.instrument-btn .emoji {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.instrument-btn.is-selected {
+  border-color: var(--henle);
+  color: var(--henle);
+  box-shadow: inset 0 0 0 1px var(--henle);
+}
+
+/* ---- pickers (scale cards, song cards) ---- */
+
+.scale-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.7rem;
+}
+
+.scale-card,
+.song-card {
+  font-family: var(--font-body);
+  cursor: pointer;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.scale-card {
+  padding: 1rem 0.75rem;
+  text-align: center;
+}
+
+.scale-card:hover,
+.song-card:hover {
+  border-color: var(--henle);
+  background: var(--paper-raised);
+}
+
+.scale-card__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.scale-card__label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--henle);
+  margin-top: 0.2rem;
+}
+
+.scale-card__tonic {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--faded);
+  margin-top: 0.3rem;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin: 0 0.1rem;
+  border: 1px solid var(--line-strong);
+}
+
+.dot.perfect { background: var(--p-perfect); }
+.dot.lo-mild { background: var(--p-lo-mild); }
+.dot.hi-mild { background: var(--p-hi-mild); }
+.dot.lo { background: var(--p-lo); }
+.dot.hi { background: var(--p-hi); }
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.song-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  padding: 1rem 1.1rem;
+}
+
+.song-card:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.song-card__icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.song-card__main {
+  flex: 1;
+}
+
+.song-card__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.song-card__meta {
+  font-size: 0.8rem;
+  color: var(--henle);
+  margin: 0.15rem 0 0.3rem;
+}
+
+.song-card__blurb {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.song-card__go {
+  font-weight: 500;
+  color: var(--burgundy);
+  flex-shrink: 0;
+}
+
+/* ---- HUD ---- */
+
+.hud {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+}
+
+.hud__item {
+  flex: 1;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.hud__label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faded);
+}
+
+.hud__value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--henle);
+}
+
+/* ---- scale practice: orb + ladder ---- */
+
+.orb {
+  width: 240px;
+  height: 240px;
+  margin: 1.5rem auto;
+  border-radius: 50%;
+  background: var(--p-neutral);
+  border: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 6px var(--paper), 0 0 0 7px var(--line);
+  transition: background-color 0.08s linear;
+}
+
+.orb.is-perfect { background: var(--p-perfect); }
+.orb.is-lo-mild { background: var(--p-lo-mild); }
+.orb.is-hi-mild { background: var(--p-hi-mild); }
+.orb.is-lo { background: var(--p-lo); }
+.orb.is-hi { background: var(--p-hi); }
+
+.orb__solfege {
+  font-family: var(--font-display);
+  font-size: 3.6rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.orb.is-perfect .orb__solfege,
+.orb.is-lo-mild .orb__solfege,
+.orb.is-hi-mild .orb__solfege,
+.orb.is-lo .orb__solfege,
+.orb.is-hi .orb__solfege {
+  color: var(--paper);
+}
+
+.orb__note {
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-top: 0.3rem;
+  opacity: 0.75;
+}
+
+.orb.is-perfect .orb__note,
+.orb.is-lo-mild .orb__note,
+.orb.is-hi-mild .orb__note,
+.orb.is-lo .orb__note,
+.orb.is-hi .orb__note {
+  color: var(--paper);
+}
+
+.orb__hold {
+  position: relative;
+  width: 240px;
+  height: 6px;
+  margin: -0.5rem auto 1rem;
+  background: var(--paper-dim);
+  border: 1px solid var(--line-strong);
+}
+
+.orb__hold-bar {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--p-perfect);
+  transition: width 0.05s linear;
+}
+
+.ladder {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.step {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--faded);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 50%;
+}
+
+.step.is-done {
+  background: var(--p-perfect);
+  border-color: var(--p-perfect);
+  color: var(--paper);
+}
+
+.step.is-current {
+  border-color: var(--henle);
+  color: var(--henle);
+  box-shadow: inset 0 0 0 1px var(--henle);
+}
+
+/* ---- timpani: highway ---- */
+
+.highway {
+  position: relative;
+  height: 420px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  overflow: hidden;
+  /* 오선 배경 — 노트가 떨어지는 악보 */
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0,
+    transparent 79px,
+    var(--line) 79px,
+    var(--line) 80px
+  );
+}
+
+.lanes {
+  display: flex;
+  height: 100%;
+}
+
+.lane {
+  position: relative;
+  flex: 1;
+  border-right: 1px dashed var(--line);
+}
+
+.lane:last-child {
+  border-right: none;
+}
+
+.lane.is-pressed {
+  background: rgba(31, 58, 95, 0.06);
+}
+
+.hit-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 70px;
+  height: 2px;
+  background: var(--burgundy);
+  z-index: 3;
+}
+
+.lane__key {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  border: 1px solid var(--henle);
+  border-radius: 50%;
+  color: var(--henle);
+  background: var(--paper);
+  z-index: 2;
+}
+
+.lane.is-pressed .lane__key {
+  background: var(--henle);
+  color: var(--paper);
+}
+
+.note-block {
+  position: absolute;
+  left: 14%;
+  width: 72%;
+  height: 22px;
+  background: var(--ink);
+  border-radius: 11px; /* 음표 머리처럼 */
+  z-index: 1;
+}
+
+.note-block.is-hit {
+  background: var(--p-lo-mild);
+  opacity: 0.45;
+}
+
+.note-block.is-missed {
+  background: var(--line-strong);
+  opacity: 0.5;
+}
+
+.judge-flash {
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: 500;
+  height: 2rem;
+  margin: 0.6rem 0;
+}
+
+.judge-flash.perfect { color: var(--p-lo-mild); }
+.judge-flash.good { color: var(--p-perfect); }
+.judge-flash.miss { color: var(--burgundy); }
+
+/* ---- sync calibration ---- */
+
+.sync-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.sync-row__label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faded);
+}
+
+.sync-row input[type='range'] {
+  flex: 1;
+  min-width: 140px;
+  accent-color: var(--henle);
+  cursor: pointer;
+}
+
+.sync-row__value {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--henle);
+  min-width: 64px;
+  text-align: right;
+}
+
+.sync-nudge {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  background: var(--paper);
+  color: var(--henle);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+}
+
+.sync-nudge:hover {
+  border-color: var(--henle);
+}
+
+/* ---- results ---- */
+
+.results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.25rem;
+}
+
+.result-cell {
+  text-align: center;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  padding: 0.8rem 0.4rem;
+}
+
+.result-cell__num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--henle);
+}
+
+.result-cell__lbl {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faded);
+}
+
+.results .btn {
+  margin-right: 0.5rem;
+}

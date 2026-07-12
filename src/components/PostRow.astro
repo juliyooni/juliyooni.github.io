@@ -1,0 +1,68 @@
+---
+import { t, formatDate, type Locale } from '../i18n/ui';
+import { postPath, type Post, type Section } from '../lib/posts';
+
+interface Props {
+  locale: Locale;
+  section: Section;
+  post: Post;
+  prefix?: string;
+}
+
+const { locale, section, post, prefix } = Astro.props;
+const showBadge = post.data.lang !== locale;
+---
+
+<li class="post-row">
+  <div class="title-line">
+    {prefix && <span class="prefix ornament">{prefix}</span>}
+    <a href={postPath(section, post)} lang={post.data.lang}>{post.data.title}</a>
+    {showBadge && (
+      <span class="lang-badge">{t(locale, post.data.lang === 'ko' ? 'post.koreanOnly' : 'post.englishOnly')}</span>
+    )}
+  </div>
+  <p class="desc" lang={post.data.lang}>{post.data.description}</p>
+  <p class="date ornament">{formatDate(locale, post.data.date)}</p>
+</li>
+
+<style>
+  .post-row {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .title-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+  }
+
+  .prefix {
+    font-size: 0.95rem;
+    min-width: 1.6rem;
+  }
+
+  .title-line a {
+    font-family: var(--font-display);
+    font-size: 1.18rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .title-line a:hover {
+    color: var(--henle);
+  }
+
+  .desc {
+    font-size: 0.87rem;
+    color: var(--muted);
+    margin: 0.3rem 0 0;
+    word-break: keep-all;
+  }
+
+  .date {
+    font-size: 0.8rem;
+    margin: 0.35rem 0 0;
+  }
+</style>

@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHero from './SectionHero.astro';
+import { t, localePath, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const games = [
+  {
+    href: '/playground/voice',
+    no: 'I.',
+    title: 'Voice Transformer',
+    ornament: 'Stimmtausch',
+    desc:
+      locale === 'ko'
+        ? '멜로디를 부르면 바이올린·트럼펫·색소폰·플루트가 그대로 따라 연주합니다.'
+        : 'Sing a melody; a violin, trumpet, saxophone or flute plays it back.',
+    mic: true,
+  },
+  {
+    href: '/playground/timpani',
+    no: 'II.',
+    title: 'Timpani',
+    ornament: 'Pauken',
+    desc:
+      locale === 'ko'
+        ? '차이콥스키 비창 행진곡에서, 팀파니 주자는 당신입니다. A·S·D·F로 연주하세요.'
+        : 'In Tchaikovsky’s Pathétique march, you are the timpanist. Play with A·S·D·F.',
+    mic: false,
+  },
+  {
+    href: '/playground/scale',
+    no: 'III.',
+    title: 'Scale Practice',
+    ornament: 'Solfège',
+    desc:
+      locale === 'ko'
+        ? '음계를 부르면 음정의 정확도를 실시간으로 비춰줍니다. 청음·시창 연습에.'
+        : 'Sing a scale and see your intonation live. For ear training and sight-singing.',
+    mic: true,
+  },
+];
+
+const note =
+  locale === 'ko'
+    ? '모든 게임은 브라우저에서만 돌아갑니다 — 서버로 가는 소리는 없습니다. 헤드폰을 권장합니다.'
+    : 'Everything runs in your browser — no audio leaves your device. Headphones recommended.';
+---
+
+<Base locale={locale} title={t(locale, 'nav.playground')} description={t(locale, 'playground.desc')}>
+  <SectionHero
+    title={t(locale, 'nav.playground')}
+    ornament={t(locale, 'playground.subtitle')}
+    description={t(locale, 'playground.desc')}
+  />
+
+  <div class="games">
+    {games.map((game) => (
+      <a class="plate game-card" href={localePath(locale, game.href)}>
+        <span class="no ornament">{game.no}</span>
+        <span class="body">
+          <span class="title">
+            {game.title}
+            <span class="ornament sub"> — {game.ornament}</span>
+            {game.mic && <span class="mic">{locale === 'ko' ? '마이크' : 'mic'}</span>}
+          </span>
+          <span class="desc">{game.desc}</span>
+        </span>
+        <span class="go ornament">→</span>
+      </a>
+    ))}
+  </div>
+
+  <p class="footnote ornament">{note}</p>
+</Base>
+
+<style>
+  .games {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.8rem;
+  }
+
+  .game-card {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.15rem 1.3rem;
+  }
+
+  .no {
+    font-size: 1.05rem;
+    min-width: 1.8rem;
+  }
+
+  .body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .sub {
+    font-size: 0.8em;
+    font-weight: 400;
+  }
+
+  .mic {
+    font-size: 0.62rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border: 1px solid var(--line-strong);
+    border-radius: 2px;
+    padding: 0.05rem 0.35rem;
+    margin-left: 0.5rem;
+    vertical-align: 0.2em;
+  }
+
+  .desc {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+    word-break: keep-all;
+  }
+
+  .go {
+    font-size: 1.1rem;
+  }
+
+  .footnote {
+    text-align: center;
+    font-size: 0.82rem;
+    margin-top: 2rem;
+  }
+</style>

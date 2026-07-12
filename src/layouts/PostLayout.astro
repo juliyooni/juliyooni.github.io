@@ -1,0 +1,62 @@
+---
+import 'katex/dist/katex.min.css';
+import Base from './Base.astro';
+import { t, formatDate, type Locale } from '../i18n/ui';
+import type { Post, Section } from '../lib/posts';
+
+interface Props {
+  section: Section;
+  post: Post;
+}
+
+const { section, post } = Astro.props;
+// 글 상세의 UI 언어는 글이 쓰인 언어를 따른다
+const locale = post.data.lang as Locale;
+const sectionLabel = t(locale, section === 'mir' ? 'nav.mir' : 'nav.essays');
+const sectionOrnament = t(locale, section === 'mir' ? 'mir.subtitle' : 'essays.subtitle');
+const backPath = locale === 'ko' ? `/ko/${section}` : `/${section}`;
+---
+
+<Base locale={locale} title={post.data.title} description={post.data.description}>
+  <article>
+    <header>
+      <p class="crumb">
+        <a href={backPath}>{sectionLabel}</a>
+        <span class="ornament"> — {sectionOrnament}</span>
+        {post.data.series === 'fmp' && (
+          <span class="ornament">· {t(locale, 'mir.series.fmp')} {post.data.seriesOrder}</span>
+        )}
+      </p>
+      <h1 lang={post.data.lang}>{post.data.title}</h1>
+      <p class="meta ornament">{formatDate(locale, post.data.date)}</p>
+      <div class="staff-rule" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    </header>
+    <div class="prose" lang={post.data.lang}>
+      <slot />
+    </div>
+  </article>
+</Base>
+
+<style>
+  header {
+    text-align: center;
+    padding-top: 2.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .crumb {
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    word-break: keep-all;
+  }
+
+  .meta {
+    font-size: 0.85rem;
+    margin: 0.7rem 0 0;
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const desc =
+  locale === 'ko'
+    ? '멜로디를 부르면, 목소리의 음정·셈여림·비브라토를 그대로 입은 악기가 다시 연주합니다. 게임 안내는 한국어입니다.'
+    : 'Sing a melody and hear it played back as a violin, trumpet, saxophone or flute — your pitch, dynamics and vibrato intact. In-game text is in Korean.';
+---
+
+<GameLayout locale={locale} title="Voice Transformer" ornament="Stimmtausch" description={desc}>
+  <section class="bar-display panel" id="barDisplay">
+    <div class="bar-display__label" id="barLabel">준비됐나요?</div>
+    <div class="beat-lamps" id="beatLamps"></div>
+  </section>
+
+  <section class="panel">
+    <h2 class="section-h">바꿀 악기 고르기</h2>
+    <div class="instrument-row" id="instrumentRow"></div>
+  </section>
+
+  <section class="panel">
+    <div class="controls">
+      <button class="btn btn--pink" id="recordBtn">● 녹음 시작</button>
+      <button class="btn" id="playVoiceBtn" disabled>▶ 내 목소리</button>
+      <button class="btn btn--green" id="playInstrumentBtn" disabled>▶ 악기 소리</button>
+      <p class="status" id="status">녹음 버튼을 누르면 예비 한 마디를 띡띡 세어준 뒤 시작합니다.</p>
+    </div>
+  </section>
+
+  <details class="note panel">
+    <summary>어떻게 동작하나요?</summary>
+    <p>
+      예비 한 마디(4박) 동안만 메트로놈이 띡띡 소리를 냅니다. 그 뒤로는 소리 없이 화면 위 박자
+      램프로만 위치를 알려줘요. 녹음이 끝나면 목소리의 음정·셈여림·비브라토를 추출해 고른 악기
+      음색으로 다시 연주합니다 (Google Magenta DDSP, 전부 브라우저에서 처리).
+    </p>
+  </details>
+</GameLayout>
+
+<script>
+  import '../../games/voice-transformer/main';
+</script>
