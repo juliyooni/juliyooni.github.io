@@ -3,11 +3,15 @@ import { t, localePath, switchLocalePath, type Locale } from '../i18n/ui';
 
 interface Props {
   locale: Locale;
+  /** locale이 없는 단일 URL 페이지(글 상세 등)에서 토글이 갈 곳 */
+  switchOverride?: string;
 }
 
-const { locale } = Astro.props;
+const { locale, switchOverride } = Astro.props;
 const path = Astro.url.pathname;
-const other = switchLocalePath(path);
+const other = switchOverride
+  ? { locale: locale === 'ko' ? ('en' as Locale) : ('ko' as Locale), path: switchOverride }
+  : switchLocalePath(path);
 
 const items = [
   { href: '/research', label: t(locale, 'nav.research') },

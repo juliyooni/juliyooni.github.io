@@ -9,9 +9,10 @@ interface Props {
   title?: string;
   description?: string;
   wide?: boolean;
+  switchOverride?: string;
 }
 
-const { locale, title, description, wide = false } = Astro.props;
+const { locale, title, description, wide = false, switchOverride } = Astro.props;
 const pageTitle = title ? `${title} · ${t(locale, 'site.title')}` : t(locale, 'site.title');
 const pageDesc = description ?? t(locale, 'site.description');
 ---
@@ -36,7 +37,7 @@ const pageDesc = description ?? t(locale, 'site.description');
     />
   </head>
   <body>
-    <Header locale={locale} />
+    <Header locale={locale} switchOverride={switchOverride} />
     <main class:list={[{ wide }]}>
       <slot />
     </main>

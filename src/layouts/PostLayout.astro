@@ -15,9 +15,16 @@ const locale = post.data.lang as Locale;
 const sectionLabel = t(locale, section === 'mir' ? 'nav.mir' : 'nav.essays');
 const sectionOrnament = t(locale, section === 'mir' ? 'mir.subtitle' : 'essays.subtitle');
 const backPath = locale === 'ko' ? `/ko/${section}` : `/${section}`;
+// 글은 단일 URL이라 반대 locale 페이지가 없음 — 토글은 반대 언어의 섹션 목록으로
+const switchOverride = locale === 'ko' ? `/${section}/` : `/ko/${section}/`;
 ---
 
-<Base locale={locale} title={post.data.title} description={post.data.description}>
+<Base
+  locale={locale}
+  title={post.data.title}
+  description={post.data.description}
+  switchOverride={switchOverride}
+>
   <article>
     <header>
       <p class="crumb">
