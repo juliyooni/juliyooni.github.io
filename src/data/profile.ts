@@ -37,6 +37,31 @@ export const profile = {
       href: '/mir',
     },
   ],
+  // ✏️ About 페이지 타임라인 — 최신이 위로. period는 '2025 —'(진행 중) 또는 '2019 – 2023' 형태
+  timeline: [
+    {
+      period: '2025 —',
+      title: {
+        en: 'M.S. student, MALerLab, Sogang University',
+        ko: '서강대학교 MALerLab 석사과정',
+      },
+      detail: {
+        en: 'Music information retrieval, advised by Prof. Dasaem Jeong.',
+        ko: '음악 정보 검색(MIR). 지도교수 정다샘.',
+      },
+    },
+    {
+      period: '20XX – 20XX', // ✏️
+      title: {
+        en: 'B.A. in German Language & Literature', // ✏️ 학교·전공 확인
+        ko: '독어독문학 학사', // ✏️
+      },
+      detail: {
+        en: '', // ✏️ 부전공, 논문 등 (비우면 표시 안 됨)
+        ko: '',
+      },
+    },
+  ],
   portrait: '/portrait.svg', // ✏️ public/portrait.jpg 넣고 '/portrait.jpg'로 변경
   links: {
     github: 'https://github.com/juliyooni',
