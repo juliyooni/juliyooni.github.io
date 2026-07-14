@@ -1,0 +1,49 @@
+backend:
+  name: github
+  repo: juliyooni/juliyooni.github.io
+  branch: main
+site_url: https://juliyooni.github.io
+media_folder: public/images
+public_folder: /images
+
+editor:
+  preview: false
+
+collections:
+  - name: mir
+    label: MIR — Études
+    label_singular: MIR 글
+    folder: src/content/mir
+    create: true
+    extension: md
+    format: frontmatter
+    slug: '{{slug}}'
+    summary: '{{title}} ({{date}})'
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: description, label: 한 줄 요약, widget: string, hint: '목록과 검색엔진에 보이는 설명' }
+      - { name: date, label: 날짜, widget: datetime, format: 'YYYY-MM-DD', time_format: false }
+      - { name: lang, label: 언어, widget: select, options: [ko, en], default: ko }
+      - { name: series, label: 연재, widget: select, options: [{ label: '(없음)', value: '' }, { label: 'FMP 해설', value: fmp }], default: '', required: false }
+      - { name: seriesOrder, label: 연재 순서, widget: number, value_type: int, required: false, hint: 'FMP 해설일 때만: 0=서곡, 1=Ch.1 …' }
+      - { name: draft, label: 초안, widget: boolean, default: true, required: false, hint: '켜져 있으면 사이트에 안 나옴' }
+      - { name: body, label: 본문, widget: markdown }
+
+  - name: essays
+    label: Essays — Feuilleton
+    label_singular: 에세이
+    folder: src/content/essays
+    create: true
+    extension: md
+    format: frontmatter
+    slug: '{{slug}}'
+    summary: '{{title}} ({{date}})'
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: description, label: 한 줄 요약, widget: string }
+      - { name: date, label: 날짜, widget: datetime, format: 'YYYY-MM-DD', time_format: false }
+      - { name: lang, label: 언어, widget: select, options: [ko, en], default: ko }
+      - { name: draft, label: 초안, widget: boolean, default: true, required: false, hint: '켜져 있으면 사이트에 안 나옴' }
+      - { name: body, label: 본문, widget: markdown }
